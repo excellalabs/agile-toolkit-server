@@ -1,0 +1,25 @@
+{
+  "name": "agile-toolkit-server",
+  "version": "0.1.0",
+  "scripts": {
+    "build": "npm run build-ts && npm run lint",
+    "build-ts": "tsc --skipLibCheck",
+    "lint": "tslint -c tslint.json -p tsconfig.json",
+    "start": "npm run serve",
+    "serve": "node dist/server.js",
+    "watch": "concurrently \"npm run watch-node\" \"npm run watch-ts\"",
+    "watch-node": "nodemon dist/server.js",
+    "watch-ts": "npm run build-ts -w"
+  },
+  "dependencies": {
+    "apollo-server": "^2.3.2",
+    "graphql": "^14.1.1",
+    "typescript": "^3.2.4"
+  },
+  "devDependencies": {
+    "concurrently": "^4.1.0",
+    "nodemon": "^1.18.9",
+    "tslint": "^5.12.1",
+    "tslint-config-standard": "^8.0.1"
+  }
+}
