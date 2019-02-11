@@ -1,0 +1,29 @@
+version: '3.2'
+services:
+  agile-toolkit-server:
+    container_name: agile-toolkit-server
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - '.:/usr/src/app'
+      - '/usr/src/app/node_modules'
+    ports:
+      - '4000:4000'
+    environment:
+      - NODE_ENV=development
+    command: ["npm", "run", "watch"]
+  # Production service
+  # agile-toolkit-server:
+  #   container_name: agile-toolkit-server
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - '.:/usr/src/app'
+  #     - '/usr/src/app/node_modules'
+  #   ports:
+  #     - '4000:4000'
+  #   environment:
+  #     - NODE_ENV=development
+  #   command: bash -c "npm run build && npm run serve"
