@@ -1,4 +1,5 @@
 import { ApolloServer, gql } from 'apollo-server';
+import Session from './models/Session';
 
 /**
  * This is some dummy planning poker session data that will be used to set up
@@ -31,6 +32,10 @@ const typeDefs = gql`
     session: Session,
     sessions: [Session]
   }
+
+  type Mutation {
+    createSession(data: String): Session
+  }
 `;
 
 /**
@@ -40,6 +45,15 @@ const typeDefs = gql`
 const resolvers = {
   Query: {
     sessions: () => sessions,
+  },
+  Mutation: {
+    createSession: (root, { data }) => {
+      console.log("TEST", data);
+      Session.create({ name: data }, function (err, small) {
+        return 'TESTTEST';
+        // saved!
+      });
+    },
   },
 };
 
