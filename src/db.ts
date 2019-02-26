@@ -1,13 +1,21 @@
-import mongoose from 'mongoose';
+import { connect, Db } from 'mongodb'
 
-mongoose.Promise = global.Promise;
+let MONGO_URI = 'mongodb://mongo:27017/agiletoolkit'
+let db: Db
 
-const url = 'mongodb://localhost:27017/agiletoolkit';
+export async function dbConnect (): Promise<Db> {
+  if (db) {
+    return db
+  }
 
-mongoose.connect(url, { useNewUrlParser: true });
+  console.log('connecting to mongodb...')
+  const client = await connect(MONGO_URI, { useNewUrlParser: true })
+  db = client.db()
+  console.log('connected to mongodb database:', db.databaseName)
 
-mongoose.connection.once('open', () => {
-  console.log(`Connected to mongo at ${url}`);
-});
+  return db
+}
 
-export default mongoose;
+export function getDb() {
+  return db;
+}

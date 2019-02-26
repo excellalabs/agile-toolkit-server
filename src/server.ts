@@ -1,5 +1,6 @@
 import { ApolloServer, gql } from 'apollo-server';
-import Session from './models/Session';
+import { getDb, dbConnect } from './db';
+import { ObjectId } from 'mongodb';
 
 /**
  * This is some dummy planning poker session data that will be used to set up
@@ -24,8 +25,8 @@ const sessions = [
  */
 const typeDefs = gql`
   type Session {
-    id: Int,
-    points: [String]
+    _id: String,
+    data: String
   }
 
   type Query {
@@ -47,12 +48,9 @@ const resolvers = {
     sessions: () => sessions,
   },
   Mutation: {
-    createSession: (root, { data }) => {
-      console.log("TEST", data);
-      Session.create({ name: data }, function (err, small) {
-        return 'TESTTEST';
-        // saved!
-      });
+    createSession: async (root, { data }) => {
+      const result = await getDb().collection('sessions').insertOne({ data: data });
+      return await getDb().collection('sessions').findOne({"_id": new ObjectId(result.insertedId)})
     },
   },
 };
@@ -70,7 +68,6 @@ const server = new ApolloServer({
  * Now we can run the ApolloServer.
  */
 server.listen().then(({ url }) => {
-  console.log(`Server ready at ${url}`);
-}).catch(err => {
-  console.log(err);
+  console.log(`Connected to ${url}`);
+  dbConnect();
 });
