@@ -60,4 +60,6 @@ const server = new ApolloServer({
 server.listen().then(({ url }) => {
   console.log(`Connected to ${url}`);
   dbConnect();
+}).catch(err => {
+  console.log(err);
 });
