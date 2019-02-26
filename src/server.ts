@@ -3,21 +3,6 @@ import { getDb, dbConnect } from './db';
 import { ObjectId } from 'mongodb';
 
 /**
- * This is some dummy planning poker session data that will be used to set up
- * the ApolloServer
- */
-const sessions = [
-  {
-    id: 0,
-    points: ['1', '2', '5', '2', '3'],
-  },
-  {
-    id: 1,
-    points: ['2', '2', '3', 'coffee', '3'],
-  },
-];
-
-/**
  * Types define shape of data returned by ApolloServer.
  *
  * They are also uses to specify "queries" (fetching data) and "mutations"
@@ -30,7 +15,7 @@ const typeDefs = gql`
   }
 
   type Query {
-    session: Session,
+    session(id: String): Session,
     sessions: [Session]
   }
 
@@ -45,7 +30,12 @@ const typeDefs = gql`
  */
 const resolvers = {
   Query: {
-    sessions: () => sessions,
+    session: async (root, { id }) => {
+      return await getDb().collection('sessions').findOne({"_id": new ObjectId(id)});
+    },
+    sessions: async () => {
+      return await getDb().collection('sessions').find().toArray();
+    }
   },
   Mutation: {
     createSession: async (root, { data }) => {
