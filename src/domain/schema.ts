@@ -1,5 +1,6 @@
 import { merge } from 'lodash';
 import { typeDefs as Session, resolvers as sessionResolvers } from "./session/session";
+import { typeDefs as Vote, resolvers as voteResolvers } from "./vote/vote";
 import { gql } from 'apollo-server';
 import { makeExecutableSchema } from "graphql-tools";
 
@@ -16,6 +17,6 @@ const Mutation = gql`
 `;
 
 export default makeExecutableSchema({
-    typeDefs: [ Query, Mutation, Session ],
-    resolvers: merge(sessionResolvers)
+    typeDefs: [ Query, Mutation, Vote, Session ],
+    resolvers: merge(sessionResolvers, voteResolvers)
 });

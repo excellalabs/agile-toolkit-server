@@ -5,7 +5,8 @@ import { ObjectId } from 'mongodb';
 export const typeDefs = gql`
   type Session {
     _id: String,
-    data: String
+    data: String,
+    votes: [Vote]
   }
 
   extend type Query {
@@ -29,7 +30,7 @@ export const resolvers = {
   },
   Mutation: {
     createSession: async (root, { data }) => {
-      const result = await getDb().collection('sessions').insertOne({ data: data });
+      const result = await getDb().collection('sessions').insertOne({ data: data, votes: [] });
       return await getDb().collection('sessions').findOne({"_id": new ObjectId(result.insertedId)})
     },
   },
