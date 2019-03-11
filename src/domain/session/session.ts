@@ -22,16 +22,16 @@ export const typeDefs = gql`
 export const resolvers = {
   Query: {
     session: async (root, { id }) => {
-      return await getDb().collection('sessions').findOne({"_id": new ObjectId(id)});
+      return getDb().collection('sessions').findOne({ '_id': new ObjectId(id) });
     },
     sessions: async () => {
-      return await getDb().collection('sessions').find().toArray();
-    }
+      return getDb().collection('sessions').find().toArray();
+    },
   },
   Mutation: {
     createSession: async (root, { data }) => {
       const result = await getDb().collection('sessions').insertOne({ data: data, votes: [] });
-      return await getDb().collection('sessions').findOne({"_id": new ObjectId(result.insertedId)})
+      return getDb().collection('sessions').findOne({ '_id': new ObjectId(result.insertedId) });
     },
   },
 };

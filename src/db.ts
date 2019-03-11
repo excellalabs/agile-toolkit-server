@@ -1,21 +1,21 @@
-import { connect, Db } from 'mongodb'
+import { connect, Db } from 'mongodb';
 
-let MONGO_URI = 'mongodb://mongo:27017/agiletoolkit'
-let db: Db
+let MONGO_URI = 'mongodb://mongo:27017/agiletoolkit';
+let db: Db;
 
 export async function dbConnect (): Promise<Db> {
   if (db) {
-    return db
+    return db;
   }
 
-  console.log('connecting to mongodb...')
-  const client = await connect(MONGO_URI, { useNewUrlParser: true })
-  db = client.db()
-  console.log('connected to mongodb database:', db.databaseName)
+  console.log('connecting to mongodb...');
+  const client = await connect(MONGO_URI, { useNewUrlParser: true });
+  db = client.db();
+  console.log('connected to mongodb database:', db.databaseName);
 
-  return db
+  return db;
 }
 
-export function getDb() {
+export function getDb () {
   return db;
 }

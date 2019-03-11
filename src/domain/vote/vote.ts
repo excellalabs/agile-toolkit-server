@@ -20,16 +20,16 @@ export const typeDefs = gql`
 export const resolvers = {
   Query: {
     vote: async (root, { id }) => {
-      return await getDb().collection('votes').findOne({"_id": new ObjectId(id)});
+      return getDb().collection('votes').findOne({ '_id': new ObjectId(id) });
     },
     votes: async () => {
-      return await getDb().collection('votes').find().toArray();
-    }
+      return getDb().collection('votes').find().toArray();
+    },
   },
   Mutation: {
     createVote: async (root, { sessionId, value }) => {
-      const session = await getDb().collection('sessions').updateOne({"_id": new ObjectId(sessionId)}, { $push: {"votes": {value: value} } })
-      return await getDb().collection('sessions').findOne({"_id": new ObjectId(sessionId)})
+      const session = await getDb().collection('sessions').updateOne({ '_id': new ObjectId(sessionId) }, { $push: { 'votes': { value: value } } });
+      return getDb().collection('sessions').findOne({ '_id': new ObjectId(sessionId) });
     },
   },
 };
