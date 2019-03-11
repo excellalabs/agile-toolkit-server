@@ -1,19 +1,6 @@
 import { ApolloServer, gql } from 'apollo-server';
-
-/**
- * This is some dummy planning poker session data that will be used to set up
- * the ApolloServer
- */
-const sessions = [
-  {
-    id: 0,
-    points: ['1', '2', '5', '2', '3'],
-  },
-  {
-    id: 1,
-    points: ['2', '2', '3', 'coffee', '3'],
-  },
-];
+import { getDb, dbConnect } from './db';
+import { ObjectId } from 'mongodb';
 
 /**
  * Types define shape of data returned by ApolloServer.
@@ -23,13 +10,17 @@ const sessions = [
  */
 const typeDefs = gql`
   type Session {
-    id: Int,
-    points: [String]
+    _id: String,
+    data: String
   }
 
   type Query {
-    session: Session,
+    session(id: String): Session,
     sessions: [Session]
+  }
+
+  type Mutation {
+    createSession(data: String): Session
   }
 `;
 
@@ -39,7 +30,18 @@ const typeDefs = gql`
  */
 const resolvers = {
   Query: {
-    sessions: () => sessions,
+    session: async (root, { id }) => {
+      return await getDb().collection('sessions').findOne({"_id": new ObjectId(id)});
+    },
+    sessions: async () => {
+      return await getDb().collection('sessions').find().toArray();
+    }
+  },
+  Mutation: {
+    createSession: async (root, { data }) => {
+      const result = await getDb().collection('sessions').insertOne({ data: data });
+      return await getDb().collection('sessions').findOne({"_id": new ObjectId(result.insertedId)})
+    },
   },
 };
 
@@ -56,7 +58,8 @@ const server = new ApolloServer({
  * Now we can run the ApolloServer.
  */
 server.listen().then(({ url }) => {
-  console.log(`Server ready at ${url}`);
+  console.log(`Connected to ${url}`);
+  dbConnect();
 }).catch(err => {
   console.log(err);
 });
