@@ -5,6 +5,7 @@
     "build": "npm run build-ts && npm run lint",
     "build-ts": "tsc --skipLibCheck",
     "lint": "tslint -c tslint.json -p tsconfig.json",
+    "lint-fix": "tslint --fix -c tslint.json -p tsconfig.json",
     "start": "npm run serve",
     "serve": "node dist/server.js",
     "watch": "concurrently \"npm run watch-node\" \"npm run watch-ts\"",
