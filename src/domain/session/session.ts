@@ -5,8 +5,9 @@ import { ObjectId } from 'mongodb';
 export const typeDefs = gql`
   type Session {
     _id: String,
-    data: String,
-    votes: [Vote]
+    name: String,
+    votes: [Vote],
+    flipped: Boolean
   }
 
   extend type Query {
@@ -15,7 +16,7 @@ export const typeDefs = gql`
   }
 
   extend type Mutation {
-    createSession(data: String): Session
+    createSession(name: String): Session
   }
 `;
 
@@ -29,8 +30,8 @@ export const resolvers = {
     },
   },
   Mutation: {
-    createSession: async (root, { data }) => {
-      const result = await getDb().collection('sessions').insertOne({ data: data, votes: [] });
+    createSession: async (root, { name }) => {
+      const result = await getDb().collection('sessions').insertOne({ name: name, votes: [], flipped: false });
       return getDb().collection('sessions').findOne({ '_id': new ObjectId(result.insertedId) });
     },
   },
