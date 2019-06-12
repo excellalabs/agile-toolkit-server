@@ -13,7 +13,8 @@ export const typeDefs = gql`
   }
 
   extend type Mutation {
-    createVote(sessionId: String, value: String): Session
+    createVote(sessionId: String, value: String): Session,
+    clearVotes(sessionId: String): Session
   }
 `;
 
@@ -30,6 +31,14 @@ export const resolvers = {
     createVote: async (root, { sessionId, value }) => {
       const session = await getDb().collection('sessions').updateOne({ '_id': new ObjectId(sessionId) }, { $push: { 'votes': { value: value } } });
       return getDb().collection('sessions').findOne({ '_id': new ObjectId(sessionId) });
+    },
+    clearVotes: async (root, { sessionId }) => {
+      const response = await getDb().collection('sessions').findOneAndUpdate(
+        { '_id': new ObjectId(sessionId) },
+        { $set: { 'votes': [] } },
+        { returnOriginal: false },
+      );
+      return response.value;
     },
   },
 };
