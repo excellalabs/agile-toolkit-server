@@ -16,7 +16,8 @@ export const typeDefs = gql`
   }
 
   extend type Mutation {
-    createSession(name: String): Session
+    createSession(name: String): Session,
+    flip(id: String): Session
   }
 `;
 
@@ -34,5 +35,14 @@ export const resolvers = {
       const result = await getDb().collection('sessions').insertOne({ name: name, votes: [], flipped: false });
       return getDb().collection('sessions').findOne({ '_id': new ObjectId(result.insertedId) });
     },
+    flip: async (root, { id } ) => {
+      const session = await getDb().collection('sessions').findOne({ '_id': new ObjectId(id) });
+      const response = await getDb().collection('sessions').findOneAndUpdate(
+        { '_id': new ObjectId(id) },
+        { $set: { 'flipped': !session.flipped } },
+        { returnOriginal: false },
+      );
+      return response.value;
+    }
   },
 };
